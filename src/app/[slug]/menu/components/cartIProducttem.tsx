@@ -9,7 +9,7 @@ interface CartItemProps {
   product: CartProduct;
 }
 export default function CartProductItem({ product }: CartItemProps) {
-  const { increaseProductQuantity, decreaseProductQuantity } =
+  const { increaseProductQuantity, decreaseProductQuantity, removeProduct } =
     useContext(CartContext);
 
   return (
@@ -46,7 +46,11 @@ export default function CartProductItem({ product }: CartItemProps) {
         </div>
       </div>
 
-      <Button className="h-7 w-7 rounded-lg" variant="outline">
+      <Button
+        className="h-7 w-7 rounded-lg"
+        variant="outline"
+        onClick={() => removeProduct(product.id)}
+      >
         <TrashIcon />
       </Button>
     </div>
