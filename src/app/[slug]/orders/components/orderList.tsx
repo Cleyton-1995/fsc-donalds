@@ -71,10 +71,10 @@ export default function OrderList({ orders }: OrderListProps) {
 
             <Separator />
 
-            <div className="py-2">
+            <div className="space-y-2">
               {order.orderProducts.map((orderProduct) => (
                 <div key={orderProduct.id} className="flex items-center gap-2">
-                  <div className="h-4 w-4 flex items-center justify-center rounded-full bg-muted text-xs font-semibold">
+                  <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-400 text-xs font-semibold text-white">
                     {orderProduct.quantity}
                   </div>
 
