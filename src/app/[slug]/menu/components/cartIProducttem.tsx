@@ -14,7 +14,7 @@ export default function CartProductItem({ product }: CartItemProps) {
 
   return (
     <div className="flex items-center justify-between">
-      <div className="flex items-center gap-3">
+      <div className=" space-y-5 flex items-center gap-3">
         <div className="relative h-20 w-20 rounded-xl bg-gray-100">
           <Image src={product.imageUrl} alt={product.name} fill />
         </div>
