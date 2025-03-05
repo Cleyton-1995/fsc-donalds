@@ -37,7 +37,9 @@ function getStatusLabel(status: string) {
 }
 export default function OrderList({ orders }: OrderListProps) {
   const router = useRouter();
-  const handleBackClick = () => router.back();
+  function handleBackClick() {
+    router.back();
+  }
   return (
     <div className="space-y-6 p-6">
       <Button
