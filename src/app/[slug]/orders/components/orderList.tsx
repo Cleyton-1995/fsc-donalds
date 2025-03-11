@@ -33,9 +33,8 @@ function getStatusLabel(status: string) {
   if (status === "FINISHED") return "Finalizado";
   if (status === "IN_PREPARATION") return "Em preparo";
   if (status === "PENDING") return "Pendente";
-  if (status === "PAYMENT_CONFIRMED") return "Pagamento confirmado";
+  if (status === "PAYMENT_CORFIRMED") return "Pagamento confirmado";
   if (status === "PAYMENT_FAILED") return "Pagamento falhou";
-  if (status === "OUT_FOR_DELIVERY") return "Saiu para entrega";
   return "";
 }
 export default function OrderList({ orders }: OrderListProps) {
@@ -63,9 +62,14 @@ export default function OrderList({ orders }: OrderListProps) {
           <CardContent className="space-y-4 p-5">
             <div
               className={`w-fit rounded-full px-2 py-1 text-xs font-semibold text-white ${
-                order.status === OrderStatus.PAYMENT_CONFIRMED
+                order.status === OrderStatus.FINISHED ||
+                order.status === OrderStatus.PAYMENT_CORFIRMED
                   ? "bg-green-500 text-white"
-                  : "bg-gray-200 text-gray-500"
+                  : order.status === OrderStatus.IN_PREPARATION
+                    ? "bg-gray-200 text-gray-500"
+                    : order.status === OrderStatus.PAYMENT_FAILED
+                      ? "bg-red-500 text-white"
+                      : "bg-primary text-white"
               } `}
             >
               {getStatusLabel(order.status)}

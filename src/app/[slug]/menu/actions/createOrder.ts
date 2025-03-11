@@ -6,7 +6,6 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/prisma";
 
 import { removeCpfPunctuation } from "../helpers/cpf";
-import { redirect } from "next/navigation";
 
 interface CreateOrderInput {
   customerName: string;

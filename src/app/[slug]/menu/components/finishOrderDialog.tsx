@@ -80,9 +80,8 @@ export default function FinishOrderDialog({
       const consumptionMethod = searchParams.get(
         "consumptionMethod"
       ) as ConsumptionMethod;
-
       startTransition(async () => {
-        await createOrder({
+        const order = await createOrder({
           consumptionMethod,
           customerCpf: data.cpf,
           customerName: data.name,
@@ -90,7 +89,13 @@ export default function FinishOrderDialog({
           slug,
         });
 
-        const { sessionId } = await CreateStripeCheckout({ products });
+        const { sessionId } = await CreateStripeCheckout({
+          products,
+          orderId: order.id,
+          slug,
+          consumptionMethod,
+          cpf: data.cpf,
+        });
         if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) {
           return;
         }

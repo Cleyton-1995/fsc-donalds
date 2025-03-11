@@ -38,7 +38,7 @@ export async function POST(request: Request) {
         id: Number(orderId),
       },
       data: {
-        status: "PAYMENT_FAILED",
+        status: "PAYMENT_CORFIRMED",
       },
       include: {
         restaurant: {
@@ -52,17 +52,14 @@ export async function POST(request: Request) {
   } else if (event.type === "charge.failed") {
     const orderId = event.data.object.metadata?.orderId;
     if (!orderId) {
-      return NextResponse.json({
-        received: true,
-      });
+      return NextResponse.json({ received: false });
     }
-
     const order = await db.order.update({
       where: {
         id: Number(orderId),
       },
       data: {
-        status: "PAYMENT_CONFIRMED",
+        status: "PAYMENT_FAILED",
       },
       include: {
         restaurant: {
@@ -74,8 +71,5 @@ export async function POST(request: Request) {
     });
     revalidatePath(`/${order.restaurant.slug}/orders`);
   }
-
-  return NextResponse.json({
-    received: true,
-  });
+  return NextResponse.json({ received: true });
 }
