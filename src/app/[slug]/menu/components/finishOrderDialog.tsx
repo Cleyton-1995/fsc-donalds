@@ -16,6 +16,7 @@ import { isValidCpf } from "../helpers/cpf";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PatternFormat } from "react-number-format";
+import { loadStripe } from "@stripe/stripe-js";
 
 import {
   Form,
@@ -31,8 +32,8 @@ import { useContext, useTransition } from "react";
 import { CartContext } from "../contexts/cart";
 import { ConsumptionMethod } from "@prisma/client";
 import { createOrder } from "../actions/createOrder";
-import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
+import CreateStripeCheckout from "../actions/createStripeCheckout";
 
 const formSchema = z.object({
   name: z.string().trim().min(1, {
@@ -63,7 +64,7 @@ export default function FinishOrderDialog({
   const { slug } = useParams<{ slug: string }>();
   const { products } = useContext(CartContext);
   const searchParams = useSearchParams();
-  const [isPending, startTransition] = useTransition()
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -79,7 +80,6 @@ export default function FinishOrderDialog({
       const consumptionMethod = searchParams.get(
         "consumptionMethod"
       ) as ConsumptionMethod;
-      
 
       startTransition(async () => {
         await createOrder({
@@ -89,11 +89,18 @@ export default function FinishOrderDialog({
           products,
           slug,
         });
-        
-      onOpenChange(false);
-      toast.success("Pedido finalizado com sucesso!")
-      })
 
+        const { sessionId } = await CreateStripeCheckout({ products });
+        if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) {
+          return;
+        }
+        const stripe = await loadStripe(
+          process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY
+        );
+        stripe?.redirectToCheckout({
+          sessionId: sessionId,
+        });
+      });
     } catch (error) {
       console.error(error);
     }
@@ -153,7 +160,7 @@ export default function FinishOrderDialog({
                   className="rounded-full"
                   disabled={isPending}
                 >
-                  {isPending && <Loader2Icon className="animate-spin"/>}
+                  {isPending && <Loader2Icon className="animate-spin" />}
                   Finalizar
                 </Button>
                 <DrawerClose asChild>
