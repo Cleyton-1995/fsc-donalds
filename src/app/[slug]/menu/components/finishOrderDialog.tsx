@@ -33,7 +33,7 @@ import { CartContext } from "../contexts/cart";
 import { ConsumptionMethod } from "@prisma/client";
 import { createOrder } from "../actions/createOrder";
 import { Loader2Icon } from "lucide-react";
-import CreateStripeCheckout from "../actions/createStripeCheckout";
+import { CreateStripeCheckout } from "../actions/createStripeCheckout";
 
 const formSchema = z.object({
   name: z.string().trim().min(1, {

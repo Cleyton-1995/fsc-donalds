@@ -1,30 +1,33 @@
 "use server";
 
-import Stripe from "stripe";
-import { CartProduct } from "../contexts/cart";
-import { headers } from "next/headers";
-import { db } from "@/lib/prisma";
 import { ConsumptionMethod } from "@prisma/client";
-import { removeCpfPunctuation } from "../helpers/cpf";
+import { headers } from "next/headers";
+import Stripe from "stripe";
 
-interface CreateStripeCheckoutInput {
-  products: CartProduct[];
-  orderId: Number;
+import { CartProduct } from "../contexts/cart";
+import { removeCpfPunctuation } from "../helpers/cpf";
+import { db } from "@/lib/prisma";
+
+export const CreateStripeCheckout = async ({
+  orderId,
+  slug,
+  consumptionMethod,
+  products,
+  cpf,
+}: {
+  orderId: number;
   slug: string;
   consumptionMethod: ConsumptionMethod;
+  products: CartProduct[];
   cpf: string;
-}
-
-export default async function CreateStripeCheckout({
-  products,
-  orderId,
-  consumptionMethod,
-  slug,
-  cpf,
-}: CreateStripeCheckoutInput) {
+}) => {
+  const origin = (await headers()).get("origin") || "";
   if (!process.env.STRIPE_SECRET_KEY) {
     throw new Error("Stripe secret key not found");
   }
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2025-02-24.acacia",
+  });
 
   const productsWithPrices = await db.product.findMany({
     where: {
@@ -34,17 +37,9 @@ export default async function CreateStripeCheckout({
     },
   });
 
-  const reqHeaders = await headers();
-  const origin = reqHeaders.get("origin") ?? "";
-
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2025-02-24.acacia",
-  });
-
   const searchParams = new URLSearchParams();
   searchParams.set("consumptionMethod", consumptionMethod);
   searchParams.set("cpf", removeCpfPunctuation(cpf));
-
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     mode: "payment",
@@ -53,26 +48,18 @@ export default async function CreateStripeCheckout({
     metadata: {
       orderId,
     },
-    line_items: products.map((product) => {
-      const foundProduct = productsWithPrices.find((p) => p.id === product.id);
-
-      if (!foundProduct) {
-        throw new Error(`Produto com ID ${product.id} não encontrado no banco de dados`);
-      }
-
-      return {
-        price_data: {
-          currency: "brl",
-          product_data: {
-            name: product.name,
-            images: [product.imageUrl],
-          },
-          unit_amount: Math.round(foundProduct.price * 100),
+    line_items: products.map((product) => ({
+      price_data: {
+        currency: "brl",
+        product_data: {
+          name: product.name,
+          images: [product.imageUrl],
         },
-        quantity: product.quantity,
-      };
-    }),
+        unit_amount:
+          productsWithPrices.find((p) => p.id === product.id)!.price * 100,
+      },
+      quantity: product.quantity,
+    })),
   });
-
   return { sessionId: session.id };
-}
+};
