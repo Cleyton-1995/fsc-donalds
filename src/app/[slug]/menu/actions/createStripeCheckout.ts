@@ -14,6 +14,7 @@ interface CreateStripeCheckoutInput {
   consumptionMethod: ConsumptionMethod;
   cpf: string;
 }
+
 export default async function CreateStripeCheckout({
   products,
   orderId,
@@ -52,21 +53,26 @@ export default async function CreateStripeCheckout({
     metadata: {
       orderId,
     },
-    line_items: products.map((product) => ({
-      price_data: {
-        currency: "brl",
-        product_data: {
-          name: product.name,
-          images: [product.imageUrl],
+    line_items: products.map((product) => {
+      const foundProduct = productsWithPrices.find((p) => p.id === product.id);
+
+      if (!foundProduct) {
+        throw new Error(`Produto com ID ${product.id} não encontrado no banco de dados`);
+      }
+
+      return {
+        price_data: {
+          currency: "brl",
+          product_data: {
+            name: product.name,
+            images: [product.imageUrl],
+          },
+          unit_amount: Math.round(foundProduct.price * 100),
         },
-        unit_amount: parseInt(
-          String(
-            productsWithPrices.find((p) => p.id === product.id)!.price * 100
-          )
-        ),
-      },
-      quantity: product.quantity,
-    })),
+        quantity: product.quantity,
+      };
+    }),
   });
+
   return { sessionId: session.id };
 }
