@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useParams, useSearchParams } from "next/navigation";
-import { useContext, useTransition } from "react";
+import { useContext, useState, useTransition } from "react";
 import { CartContext } from "../contexts/cart";
 import { ConsumptionMethod } from "@prisma/client";
 import { createOrder } from "../actions/createOrder";
@@ -65,6 +65,7 @@ export default function FinishOrderDialog({
   const { products } = useContext(CartContext);
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
+  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -80,34 +81,35 @@ export default function FinishOrderDialog({
       const consumptionMethod = searchParams.get(
         "consumptionMethod"
       ) as ConsumptionMethod;
-      startTransition(async () => {
-        const order = await createOrder({
-          consumptionMethod,
-          customerCpf: data.cpf,
-          customerName: data.name,
-          products,
-          slug,
-        });
+      setIsLoading(true);
+      const order = await createOrder({
+        consumptionMethod,
+        customerCpf: data.cpf,
+        customerName: data.name,
+        products,
+        slug,
+      });
 
-        const { sessionId } = await CreateStripeCheckout({
-          products,
-          orderId: order.id,
-          slug,
-          consumptionMethod,
-          cpf: data.cpf,
-        });
-        if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) {
-          return;
-        }
-        const stripe = await loadStripe(
-          process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY
-        );
-        stripe?.redirectToCheckout({
-          sessionId: sessionId,
-        });
+      const { sessionId } = await CreateStripeCheckout({
+        products,
+        orderId: order.id,
+        slug,
+        consumptionMethod,
+        cpf: data.cpf,
+      });
+      if (!process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY) {
+        return;
+      }
+      const stripe = await loadStripe(
+        process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY
+      );
+      stripe?.redirectToCheckout({
+        sessionId: sessionId,
       });
     } catch (error) {
       console.error(error);
+    } finally {
+      return setIsLoading(false);
     }
   }
 
@@ -163,9 +165,9 @@ export default function FinishOrderDialog({
                   type="submit"
                   variant="destructive"
                   className="rounded-full"
-                  disabled={isPending}
+                  disabled={isLoading}
                 >
-                  {isPending && <Loader2Icon className="animate-spin" />}
+                  {isLoading && <Loader2Icon className="animate-spin" />}
                   Finalizar
                 </Button>
                 <DrawerClose asChild>

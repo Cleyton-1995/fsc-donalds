@@ -62,15 +62,15 @@ export default function OrderList({ orders }: OrderListProps) {
           <CardContent className="space-y-4 p-5">
             <div
               className={`w-fit rounded-full px-2 py-1 text-xs font-semibold text-white ${
-                order.status === OrderStatus.FINISHED ||
-                order.status === OrderStatus.PAYMENT_CORFIRMED
+                order.status === "FINISHED" ||
+                order.status === "PAYMENT_CORFIRMED"
                   ? "bg-green-500 text-white"
-                  : order.status === OrderStatus.IN_PREPARATION
+                  : order.status === "IN_PREPARATION"
                     ? "bg-gray-200 text-gray-500"
-                    : order.status === OrderStatus.PAYMENT_FAILED
+                    : order.status === "PAYMENT_FAILED"
                       ? "bg-red-500 text-white"
                       : "bg-primary text-white"
-              } `}
+              }`}
             >
               {getStatusLabel(order.status)}
             </div>
