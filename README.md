@@ -1,36 +1,17 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<h1 align="center">🍔 FSC Donald's</h1> 
 
-## Getting Started
+<p align="center"> Sistema de pedidos e gerenciamento para lanchonetes, desenvolvido durante o <strong>Full Stack Week</strong> da <a href="https://fullstackclub.com.br" target="_blank">Full Stack Club</a>. O projeto simula a operação de um fast-food moderno para realização e gestão de pedidos. </p> <hr/> 
 
-First, run the development server:
+<h2>🛠️ Tecnologias Utilizadas</h2> <ul> <li>Next.js (App Router)</li> <li>React.js</li> <li>Tailwind CSS</li> <li>TypeScript</li> <li>Drizzle ORM</li> <li>PostgreSQL</li> <li>Zod</li> <li>Shadcn/ui</li> <li>Lucide React</li> </ul> <hr/> <h2>🚀 Funcionalidades</h2> <ul> <li>Criação de pedidos</li> <li>Interface moderna e responsiva</li> <li>Validações robustas com Zod</li> <li>Interface de administração para gerenciamento</li> </ul> <hr/> 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+<h2>🖥️ Demonstração</h2> <p> 🔗 <strong>Deploy:</strong> <a href="https://fsc-donalds.vercel.app/fsw-donalds" target="_blank">https://fsc-donalds.vercel.app</a><br/> 📦 <strong>Repositório:</strong> <a href="https://github.com/Cleyton-1995/fsc-donalds" target="_blank">github.com/Cleyton-1995/fsc-donalds</a> </p> <hr/> 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<h2>📸 Preview</h2> <p align="center"> <!-- Substitua abaixo pela imagem real do projeto --> <img width="800">
+  
+  ![FSW-Donalds](https://github.com/user-attachments/assets/821f3416-866e-4174-ad2a-666a0564826c)
+  
+</img> </p> <hr/> 
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+<h2>📦 Como rodar o projeto localmente</h2> <ol> <li><strong>Clone o repositório:</strong><br/> <code>git clone https://github.com/Cleyton-1995/fsc-donalds.git</code> </li><br/> <li><strong>Instale as dependências:</strong><br/> <code>npm install</code> ou <code>yarn</code> </li><br/> <li><strong>Configure o banco de dados:</strong><br/> Crie um banco de dados PostgreSQL e configure o arquivo <code>.env</code> com sua conexão: <pre> DATABASE_URL="postgresql://usuario:senha@localhost:5432/nome_do_banco" </pre> </li><br/> <li><strong>Execute as migrations com Prisma:</strong><br/> <code>npx prisma migrate dev</code> </li><br/> <li><strong>Inicie o servidor de desenvolvimento:</strong><br/> <code>npm run dev</code> ou <code>yarn dev</code> </li><br/> <li><strong>Acesse em seu navegador:</strong><br/> <a href="http://localhost:3000" target="_blank">http://localhost:3000</a> </li> </ol> <hr/> <h2
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<h2>🧑‍💻 Desenvolvido por</h2> <p> Projeto criado por <a href="https://github.com/Cleyton-1995" target="_blank"><strong>Cleyton Costa</strong></a> durante o <strong>Full Stack Week</strong> da <a href="https://fullstackclub.com.br" target="_blank">Full Stack Club</a>. </p>
